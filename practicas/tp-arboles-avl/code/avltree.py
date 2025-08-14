@@ -397,15 +397,6 @@ def pathToBranch(T):
     return 
 
 
-
-
-
-
-
-
-
-
-
 t = AVLTree()
 
 insert(t, 'hola', 20)
