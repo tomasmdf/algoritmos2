@@ -52,7 +52,6 @@ def insertNode(node, element):
 
         char = element[0]
         if node.children != None: #Tiene children
-
             currentLevel = node.children.head
             #Busco si existe el char en los children de T
             while currentLevel != None:
@@ -144,6 +143,39 @@ def search(T, element):
 
 
 
+"""
+delete(T,element)
+	Descripción: Elimina un elemento se encuentre dentro del Trie
+Entrada: El Trie sobre la cual se quiere eliminar el elemento (Trie)  y el valor del elemento (palabra) a  eliminar.
+Salida: Devuelve False o True  según se haya eliminado el elemento.
+"""
+
+def deleteR(node, element):
+
+
+    
+
+    return 
+
+
+
+
+def delete(T, element):
+    #si tenemos sol y sola y se quiere eliminar sol solo hay que sacar la flag de end en la l 
+    #si tengo una palabra separada elimina desde la raiz 
+    #si quiero eliminar sola solo tengo que eliminar la a
+
+    #hago un search para ver si esta la palabra
+
+    if search(T,element) != None:
+        return deleteR(T.root, element)
+    else:
+        return False
+
+
+
+
+
 
 T = Trie()
 insert(T, 'hola')
@@ -151,4 +183,4 @@ insert(T, 'holanda')
 insert(T, 'holograma')
 insert(T, 'sol')
 mostrar_trie(T.root)
-print('Search: ', search(T, 'hologramasdd'))
+print('Search: ', search(T, 'hola'))
