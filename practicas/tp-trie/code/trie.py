@@ -150,14 +150,32 @@ Entrada: El Trie sobre la cual se quiere eliminar el elemento (Trie)  y el valor
 Salida: Devuelve False o True  según se haya eliminado el elemento.
 """
 
-def deleteR(node, element):
+def deleteR(node, element, position):
 
-
+    print('position:', position)
+    print('len(element)', len(element))
     
+    if len(element) > 0:
 
-    return 
+        char = element[0]
+        print('char', char)
 
+        positionChar = searchInTrie(node.children, char)
+        mostrarLinkedListTrie(node.children)
 
+        if positionChar != None: #esta el char buscado
+            nextLevelNode = linkedlist.accessNode(node.children, positionChar)
+            slicedElement = element[1:]
+            return deleteR(nextLevelNode.value, slicedElement, positionChar)
+        else:
+            return False
+    
+    else:
+        if node.children != None: #si tiene hijos
+            node.isEndOfWord = False
+            return True
+        else:
+            return False
 
 
 def delete(T, element):
@@ -166,9 +184,8 @@ def delete(T, element):
     #si quiero eliminar sola solo tengo que eliminar la a
 
     #hago un search para ver si esta la palabra
-
     if search(T,element) != None:
-        return deleteR(T.root, element)
+        return deleteR(T.root, element, 0)
     else:
         return False
 
@@ -184,3 +201,5 @@ insert(T, 'holograma')
 insert(T, 'sol')
 mostrar_trie(T.root)
 print('Search: ', search(T, 'hola'))
+delete(T, 'hola')
+mostrar_trie(T.root)
