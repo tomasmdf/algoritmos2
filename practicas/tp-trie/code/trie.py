@@ -150,9 +150,8 @@ Entrada: El Trie sobre la cual se quiere eliminar el elemento (Trie)  y el valor
 Salida: Devuelve False o True  según se haya eliminado el elemento.
 """
 
-def deleteR(node, element, position):
+def deleteR(node, element):
 
-    print('position:', position)
     print('len(element)', len(element))
     
     if len(element) > 0:
@@ -166,7 +165,7 @@ def deleteR(node, element, position):
         if positionChar != None: #esta el char buscado
             nextLevelNode = linkedlist.accessNode(node.children, positionChar)
             slicedElement = element[1:]
-            return deleteR(nextLevelNode.value, slicedElement, positionChar)
+            canDeleteChild = deleteR(nextLevelNode.value, slicedElement)
         else:
             return False
     
@@ -185,17 +184,62 @@ def delete(T, element):
 
     #hago un search para ver si esta la palabra
     if search(T,element) != None:
-        return deleteR(T.root, element, 0)
+        return deleteR(T.root, element)
     else:
         return False
 
 
 
+"""
+Parte 2
 
+-------------------------------------------------------------------------------
+
+Ej4
+
+findAll(T, prefijo, n)
+findAll(T, 'ho', 4)
+
+return [hola, holo]
+
+recursivamente disminuyo en 1 n, voy verificando que que cumpla con el prefijo
+devuelvo los resultados en un array
+
+-------------------------------------------------------------------------------
+
+Ej5
+
+recorro a la misma vez los dos trie si hay alguna diferencia devuelvo false
+
+-------------------------------------------------------------------------------
+
+Ej6
+
+abcd y dcba
+
+invierto una de las cadenas y hagoi un search para la cadena invertida
+
+-------------------------------------------------------------------------------
+
+Ej7
+
+autoCompletar(Trie, cadena)
+autoCompletar(T, ‘groen’)
+devolvería “land”, ya que podemos tener “groenlandia” o “groenlandés”
+
+recorre desde el prefijo hasta la primera bifurcacion que haya 
+
+
+
+
+
+
+"""
 
 
 T = Trie()
 insert(T, 'hola')
+insert(T, 'holo')
 insert(T, 'holanda')
 insert(T, 'holograma')
 insert(T, 'sol')
