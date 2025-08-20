@@ -217,14 +217,21 @@ devuelvo los resultados en un array
 """
 
 def joinWord(node, prefix, n):
-
-    """
+    print('nodeKey', node.key)
     if n > 0:
+
         if node.children:
-    """
 
+            currentNode = node.children.head
+            while currentNode:
+                newPrefix = prefix.join(node.key)
+                return joinWord(currentNode.value, newPrefix, n-1)
+            
 
-    return 
+    elif n == 0 and node.isEndOfWord:
+        return prefix
+    
+    return None
 
 
 
@@ -249,8 +256,9 @@ def findAllR(node, prefix, n, results):
 
         currentNode = node.children.head
         while currentNode:
-            wordToAdd = joinWord(node, prefix, n)
-            results.append(wordToAdd)
+            wordToAdd = joinWord(currentNode.value, prefix, n)
+            if wordToAdd:
+                results.append(wordToAdd)
             currentNode = currentNode.nextNode
 
         return print(results)
@@ -316,12 +324,12 @@ insert(T, 'hola')
 insert(T, 'holo')
 insert(T, 'holanda')
 insert(T, 'holograma')
+insert(T, 'hologramica')
 insert(T, 'sol')
 mostrar_trie(T.root)
 print('Search: ', search(T, 'hola'))
 
 ## Falta implementar el delete
+findAll(T, 'holo', 4)
 
-findAll(T, 'holo', 5)
-
-mostrar_trie(T.root)
+#mostrar_trie(T.root)
