@@ -152,29 +152,36 @@ Salida: Devuelve False o True  según se haya eliminado el elemento.
 
 def deleteR(node, element):
 
-    print('len(element)', len(element))
-    
-    if len(element) > 0:
+    # Caso base: llegamos al final de la palabra
+    if len(element) < 1:
+        node.isEndOfWord = False
+        # Si no tiene hijos → se puede eliminar este nodo
+        return node.children is None
 
+    # Buscar el hijo con la letra correspondiente en la lista
+    if node:
         char = element[0]
-        print('char', char)
-
         positionChar = searchInTrie(node.children, char)
-        mostrarLinkedListTrie(node.children)
 
-        if positionChar != None: #esta el char buscado
-            nextLevelNode = linkedlist.accessNode(node.children, positionChar)
-            slicedElement = element[1:]
-            canDeleteChild = deleteR(nextLevelNode.value, slicedElement)
+        prevNode = linkedlist.accessNode(node.children, positionChar-1)
+        currentNode = linkedlist.accessNode(node.children, positionChar)
+
+    if not currentNode:
+        return False  # la palabra no existe
+
+    # Llamada recursiva al hijo
+    slicedElement = element[1:]
+    should_delete_child = deleteR(node.children, slicedElement)
+
+    if should_delete_child:
+        # Eliminamos el nodo de la linked list
+        if prevNode:
+            prevNode.nextNode = currentNode.nextNode
         else:
-            return False
-    
-    else:
-        if node.children != None: #si tiene hijos
-            node.isEndOfWord = False
-            return True
-        else:
-            return False
+            node.children = currentNode.nextNode
+
+    # Se elimina este nodo si no es fin de palabra y no tiene hijos
+    return (not node.isEndOfWord) and (node.children is None)
 
 
 def delete(T, element):
@@ -187,6 +194,76 @@ def delete(T, element):
         return deleteR(T.root, element)
     else:
         return False
+
+
+
+
+
+"""
+
+Ej4
+
+Implementar un algoritmo que dado un árbol Trie T, un patrón p (prefijo) y un entero n, 
+escriba todas las palabras del árbol que empiezan por p y sean de longitud n. 
+
+findAll(T, prefijo, n)
+findAll(T, 'ho', 4)
+
+return [hola, holo]
+
+recursivamente disminuyo en 1 n, voy verificando que que cumpla con el prefijo
+devuelvo los resultados en un array
+
+"""
+
+def joinWord(node, prefix, n):
+
+    """
+    if n > 0:
+        if node.children:
+    """
+
+
+    return 
+
+
+
+def findAllR(node, prefix, n, results):
+
+    if len(prefix) >= 1 and n > 0:
+        #print(node.key)
+        char = prefix[0]
+        #print('char', char)
+        #mostrarLinkedListTrie(node.children)
+        positionChar = searchInTrie(node.children, char)
+        #print(positionChar)
+
+        currentNode = linkedlist.accessNode(node.children, positionChar)
+
+        slicedPrefix = prefix[1:]
+
+        return findAllR(currentNode.value, slicedPrefix, n-1, results)
+    
+    else:
+        #tengo que recorre todas las ramas y añadir las palabras a results
+
+        currentNode = node.children.head
+        while currentNode:
+            wordToAdd = joinWord(node, prefix, n)
+            results.append(wordToAdd)
+            currentNode = currentNode.nextNode
+
+        return print(results)
+    
+
+
+def findAll(T, prefix, n):
+    results = []
+
+    if T.root != None:
+        return findAllR(T.root, prefix, n, results)
+    else:
+        return results
 
 
 
@@ -229,10 +306,7 @@ devolvería “land”, ya que podemos tener “groenlandia” o “groenlandés
 
 recorre desde el prefijo hasta la primera bifurcacion que haya 
 
-
-
-
-
+recorre hasta teminar el prefijo, luego continua hasta que el node.children sea una lista con mas de 1 hijo
 
 """
 
@@ -245,5 +319,9 @@ insert(T, 'holograma')
 insert(T, 'sol')
 mostrar_trie(T.root)
 print('Search: ', search(T, 'hola'))
-delete(T, 'hola')
+
+## Falta implementar el delete
+
+findAll(T, 'holo', 5)
+
 mostrar_trie(T.root)
