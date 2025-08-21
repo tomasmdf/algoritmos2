@@ -216,30 +216,40 @@ devuelvo los resultados en un array
 
 """
 
-def joinWord(node, prefix, n):
-    print('nodeKey', node.key)
-    if n > 0:
+def joinWord(node, prefix, n, results):
+    if node.key:
+        print('nodeKey', node.key)
+    print('n', n)
+    print('prefix', prefix)
+    # base: no tiene hijos y devuelve el prefijo solo si tiene fin de palabra
+    # recursion: puede seguir bajando, por cada hijo le agrego al prefijo
 
-        if node.children:
-
-            currentNode = node.children.head
-            while currentNode:
-                newPrefix = prefix.join(node.key)
-                return joinWord(currentNode.value, newPrefix, n-1)
-            
-
-    elif n == 0 and node.isEndOfWord:
-        return prefix
+    if len(prefix) == n:
+        print('len(prefix) == n')
+        if node.isEndOfWord:
+            print('entro')
+            return results.append(prefix)
+        else:
+            return None
     
-    return None
+    newPrefix = prefix + node.key
+        
+    if node.children:
+        currentNode = node.children.head
+
+        while currentNode:
+            
+            joinWord(currentNode.value, newPrefix, n, results)
+            currentNode = currentNode.nextNode
+    elif len(newPrefix) == n:
+        joinWord(node, newPrefix, n, results)
 
 
+def findAllR(node, prefix, n, index, results):
 
-def findAllR(node, prefix, n, results):
-
-    if len(prefix) >= 1 and n > 0:
-        #print(node.key)
-        char = prefix[0]
+    if index < n and len(prefix) > index:
+        print(node.key)
+        char = prefix[index]
         #print('char', char)
         #mostrarLinkedListTrie(node.children)
         positionChar = searchInTrie(node.children, char)
@@ -247,29 +257,27 @@ def findAllR(node, prefix, n, results):
 
         currentNode = linkedlist.accessNode(node.children, positionChar)
 
-        slicedPrefix = prefix[1:]
-
-        return findAllR(currentNode.value, slicedPrefix, n-1, results)
+        return findAllR(currentNode.value, prefix, n, index+1, results)
     
     else:
         #tengo que recorre todas las ramas y añadir las palabras a results
-
+        print('ultimo node', node.key)
         currentNode = node.children.head
         while currentNode:
-            wordToAdd = joinWord(currentNode.value, prefix, n)
+            print('currentNode', currentNode.value.key)
+            wordToAdd = joinWord(currentNode.value, prefix, n, results)
             if wordToAdd:
                 results.append(wordToAdd)
             currentNode = currentNode.nextNode
 
         return print(results)
-    
 
 
 def findAll(T, prefix, n):
     results = []
 
     if T.root != None:
-        return findAllR(T.root, prefix, n, results)
+        return findAllR(T.root, prefix, n, 0, results)
     else:
         return results
 
@@ -330,6 +338,6 @@ mostrar_trie(T.root)
 print('Search: ', search(T, 'hola'))
 
 ## Falta implementar el delete
-findAll(T, 'holo', 4)
+findAll(T, 'hol', 10)
 
 #mostrar_trie(T.root)
