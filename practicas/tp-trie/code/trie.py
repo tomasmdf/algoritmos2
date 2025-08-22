@@ -217,54 +217,43 @@ devuelvo los resultados en un array
 """
 
 def joinWord(node, prefix, n, results):
-    if node.key:
-        print('nodeKey', node.key)
-    print('n', n)
-    print('prefix', prefix)
-    # base: no tiene hijos y devuelve el prefijo solo si tiene fin de palabra
-    # recursion: puede seguir bajando, por cada hijo le agrego al prefijo
 
-    if len(prefix) == n:
-        print('len(prefix) == n')
+    newPrefix = prefix + node.key #agrega el char del nodo actual
+
+    if len(newPrefix) == n:
         if node.isEndOfWord:
-            print('entro')
-            return results.append(prefix)
+            return results.append(newPrefix)
         else:
             return None
-    
-    newPrefix = prefix + node.key
-        
-    if node.children:
-        currentNode = node.children.head
 
+    if node.children and len(newPrefix) < n:
+
+        currentNode = node.children.head
         while currentNode:
-            
             joinWord(currentNode.value, newPrefix, n, results)
             currentNode = currentNode.nextNode
-    elif len(newPrefix) == n:
+
+    elif len(newPrefix) == n and not(node.children):
         joinWord(node, newPrefix, n, results)
 
 
 def findAllR(node, prefix, n, index, results):
 
     if index < n and len(prefix) > index:
-        print(node.key)
+        #print(node.key)
         char = prefix[index]
-        #print('char', char)
-        #mostrarLinkedListTrie(node.children)
         positionChar = searchInTrie(node.children, char)
-        #print(positionChar)
 
-        currentNode = linkedlist.accessNode(node.children, positionChar)
-
-        return findAllR(currentNode.value, prefix, n, index+1, results)
+        if positionChar:
+            currentNode = linkedlist.accessNode(node.children, positionChar)
+            return findAllR(currentNode.value, prefix, n, index+1, results)
+        else:
+            return None
     
     else:
         #tengo que recorre todas las ramas y añadir las palabras a results
-        print('ultimo node', node.key)
         currentNode = node.children.head
         while currentNode:
-            print('currentNode', currentNode.value.key)
             wordToAdd = joinWord(currentNode.value, prefix, n, results)
             if wordToAdd:
                 results.append(wordToAdd)
@@ -282,39 +271,110 @@ def findAll(T, prefix, n):
         return results
 
 
-
 """
-Parte 2
-
--------------------------------------------------------------------------------
-
-Ej4
-
-findAll(T, prefijo, n)
-findAll(T, 'ho', 4)
-
-return [hola, holo]
-
-recursivamente disminuyo en 1 n, voy verificando que que cumpla con el prefijo
-devuelvo los resultados en un array
-
--------------------------------------------------------------------------------
-
 Ej5
 
+Implementar un algoritmo que dado los Trie T1 y T2 devuelva True si estos pertenecen al mismo documento y False en caso contrario. Se considera que un  Trie pertenece al mismo documento cuando:
+Ambos Trie sean iguales (esto se debe cumplir)
+El Trie T1 contiene un subconjunto de las palabras del Trie T2 
+Si la implementación está basada en LinkedList, considerar el caso donde las palabras hayan sido insertadas en un orden diferente.
+
+En otras palabras, analizar si todas las palabras de T1 se encuentran en T2. 
+
 recorro a la misma vez los dos trie si hay alguna diferencia devuelvo false
+"""
 
--------------------------------------------------------------------------------
+#tengo que buscar todas las palabras de T1, guardarlas en un array y 
+#despues buscarlas en T2
 
+def findAllWordsInTrieR(node, word, results):
+
+    if node.key:
+        newWord = word + node.key
+    else:
+        newWord = ''
+
+    if node.isEndOfWord:
+        results.append(newWord)
+
+    if node.children:
+        currentNode = node.children.head
+
+        while currentNode:
+            findAllWordsInTrieR(currentNode.value, newWord, results)
+            currentNode = currentNode.nextNode
+    else:
+        return results
+
+    return results
+
+def findAllWordsInTrie(T):
+    if T.root != None:
+        return findAllWordsInTrieR(T.root, '', [])
+    else:
+        return []
+
+
+def areEqualTrie(T1, T2):
+    #busco todas las palabras de T1
+    #recorro el array buscando todas las palabras en T2
+
+    wordsArrays = findAllWordsInTrie(T1)
+    #print('palabras a buscar en T2', wordsArrays)
+
+    for x in wordsArrays:
+        if not(search(T2, x)):
+            return False
+        
+    return True
+
+
+"""
 Ej6
+
+Implemente un algoritmo que dado el Trie T devuelva True si existen en el documento T dos cadenas invertidas. 
+Dos cadenas son invertidas si se leen de izquierda a derecha y contiene los mismos caracteres que si se lee 
+de derecha a izquierda, ej: abcd y dcba son cadenas invertidas, gfdsa y asdfg son cadenas invertidas, 
+sin embargo abcd y dcka no son invertidas ya que difieren en un carácter
 
 abcd y dcba
 
 invierto una de las cadenas y hagoi un search para la cadena invertida
+"""
 
--------------------------------------------------------------------------------
+#busco todas las palabras y las meto en un array 
+#busco en el array si hay una palindromo
+# - parto a la mitad el string y comparo 
+
+def existsPalindromo(T):
+    if T.root != None:
+        
+        wordsInTrie = findAllWordsInTrie(T)
+
+        for x in wordsInTrie:
+            invertedString = x[::-1] # O(n)
+            if wordsInTrie.__contains__(invertedString):
+                return True
+        
+        return False
+        
+    else:
+        return False
+
+
+"""
 
 Ej7
+
+Un corrector ortográfico interactivo utiliza un Trie para representar las palabras de su diccionario. Queremos 
+añadir una función de auto-completar (al estilo de la tecla TAB en Linux): cuando estamos a medio escribir una 
+palabra, si sólo existe una forma correcta de continuarla entonces debemos indicarlo. 
+
+Implementar la función autoCompletar(Trie, cadena) dentro del módulo trie.py, que dado el árbol Trie T y 
+la cadena  devuelve la forma de auto-completar la palabra. Por ejemplo, para la llamada autoCompletar(T, ‘groen’) 
+devolvería “land”, ya que podemos tener “groenlandia” o “groenlandés” (en este ejemplo la palabra groenlandia y 
+groenlandés pertenecen al documento que representa el Trie). Si hay varias formas o ninguna, devolvería la cadena 
+vacía. Por ejemplo, autoCompletar(T, ma’) devolvería “” (cadena vacia) si T presenta las cadenas “madera” y “mama”
 
 autoCompletar(Trie, cadena)
 autoCompletar(T, ‘groen’)
@@ -326,18 +386,78 @@ recorre hasta teminar el prefijo, luego continua hasta que el node.children sea 
 
 """
 
+def autoCompletarR(node, prefix, index):
+    print('prefix', prefix)
+    print('node.key', node.key)
+
+    if index < len(prefix):
+        #print(node.key)
+        char = prefix[index]
+        positionChar = searchInTrie(node.children, char)
+
+        currentNode = linkedlist.accessNode(node.children, positionChar)
+
+        return autoCompletarR(currentNode.value, prefix, index+1)
+    
+    else:
+        #tengo que recorre la rama hasta que el children tenga mas de 1 hijo
+        print('else')
+        if node.children:
+            currentNode = node.children.head
+            if linkedlist.length(node.children) <= 1:
+                if index == len(prefix):
+                    print('index == len(prefix)')
+                    return autoCompletarR(currentNode.value, prefix, index+1)
+                else:
+                    return autoCompletarR(currentNode.value, prefix + node.key, index+1)
+            else:
+
+                if index == len(prefix):
+                    return prefix
+                else:
+                    return prefix + node.key
+
+
+
+def autoCompletar(T, prefix):
+    if T.root != None:
+        return autoCompletarR(T.root, prefix, 0)
+    else:
+        return ''
+
+
+
+
 
 T = Trie()
+"""
 insert(T, 'hola')
 insert(T, 'holo')
 insert(T, 'holanda')
 insert(T, 'holograma')
 insert(T, 'hologramica')
 insert(T, 'sol')
+insert(T, 'radar')
+insert(T, 'abcd')
+"""
+
+insert(T, 'cdba')
+insert(T, 'groenlandia')
+insert(T, 'groenlandes')
 mostrar_trie(T.root)
 print('Search: ', search(T, 'hola'))
 
+M = Trie()
+insert(M, 'hola')
+insert(M, 'holo')
+
+
 ## Falta implementar el delete
-findAll(T, 'hol', 10)
+findAll(T, 'hol', 3) 
+
+print('areEqualTrie: ', areEqualTrie(T, M))
+
+print('existsPalindromo: ',  existsPalindromo(T))
+print(autoCompletar(T, 'groen'))
 
 #mostrar_trie(T.root)
