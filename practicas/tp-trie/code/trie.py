@@ -33,7 +33,11 @@ def mostrar_trie(nodo, nivel=0, lado="raíz"):
             print(indentacion, f"- [{lado}] Key: {nodo.key}, EndOfWord: {nodo.isEndOfWord}")
 
         # Recorrer la linked list de hijos
-        hijo_actual = nodo.children.head if nodo.children else None
+        if nodo.children:
+            hijo_actual = nodo.children.head
+        else:
+            hijo_actual = None
+
         while hijo_actual:
             mostrar_trie(hijo_actual.value, nivel + 1, f"hijo '{hijo_actual.value.key}'")
             hijo_actual = hijo_actual.nextNode
@@ -150,30 +154,36 @@ Entrada: El Trie sobre la cual se quiere eliminar el elemento (Trie)  y el valor
 Salida: Devuelve False o True  según se haya eliminado el elemento.
 """
 
-def deleteR(node, element):
+def deleteR(node, element, prevNode):
+
+    if node.key:
+        print(node.key)
 
     # Caso base: llegamos al final de la palabra
     if len(element) < 1:
         node.isEndOfWord = False
-        # Si no tiene hijos → se puede eliminar este nodo
-        return node.children is None
+        
+        return node.children is None # Si no tiene hijos entonces se puede eliminar este nodo
+
+    canDeleteChild = False  
 
     # Buscar el hijo con la letra correspondiente en la lista
-    if node:
+    if node.children:
+        mostrarLinkedListTrie(node.children)
         char = element[0]
         positionChar = searchInTrie(node.children, char)
 
         prevNode = linkedlist.accessNode(node.children, positionChar-1)
+        if prevNode:
+            print('prevNode', prevNode.value.key)
         currentNode = linkedlist.accessNode(node.children, positionChar)
 
-    if not currentNode:
-        return False  # la palabra no existe
+        # Llamada recursiva al hijo
+        slicedElement = element[1:]
+        canDeleteChild = deleteR(currentNode.value, slicedElement, prevNode)
 
-    # Llamada recursiva al hijo
-    slicedElement = element[1:]
-    should_delete_child = deleteR(node.children, slicedElement)
 
-    if should_delete_child:
+    if canDeleteChild:
         # Eliminamos el nodo de la linked list
         if prevNode:
             prevNode.nextNode = currentNode.nextNode
@@ -190,8 +200,8 @@ def delete(T, element):
     #si quiero eliminar sola solo tengo que eliminar la a
 
     #hago un search para ver si esta la palabra
-    if search(T,element) != None:
-        return deleteR(T.root, element)
+    if search(T,element):
+        return deleteR(T.root, element, None)
     else:
         return False
 
@@ -240,11 +250,10 @@ def joinWord(node, prefix, n, results):
 def findAllR(node, prefix, n, index, results):
 
     if index < n and len(prefix) > index:
-        #print(node.key)
         char = prefix[index]
         positionChar = searchInTrie(node.children, char)
 
-        if positionChar:
+        if positionChar != None:
             currentNode = linkedlist.accessNode(node.children, positionChar)
             return findAllR(currentNode.value, prefix, n, index+1, results)
         else:
@@ -259,7 +268,7 @@ def findAllR(node, prefix, n, index, results):
                 results.append(wordToAdd)
             currentNode = currentNode.nextNode
 
-        return print(results)
+        return results
 
 
 def findAll(T, prefix, n):
@@ -283,9 +292,6 @@ En otras palabras, analizar si todas las palabras de T1 se encuentran en T2.
 
 recorro a la misma vez los dos trie si hay alguna diferencia devuelvo false
 """
-
-#tengo que buscar todas las palabras de T1, guardarlas en un array y 
-#despues buscarlas en T2
 
 def findAllWordsInTrieR(node, word, results):
 
@@ -387,26 +393,20 @@ recorre hasta teminar el prefijo, luego continua hasta que el node.children sea 
 """
 
 def autoCompletarR(node, prefix, index):
-    print('prefix', prefix)
-    print('node.key', node.key)
 
     if index < len(prefix):
         #print(node.key)
         char = prefix[index]
         positionChar = searchInTrie(node.children, char)
-
         currentNode = linkedlist.accessNode(node.children, positionChar)
-
         return autoCompletarR(currentNode.value, prefix, index+1)
     
     else:
         #tengo que recorre la rama hasta que el children tenga mas de 1 hijo
-        print('else')
         if node.children:
             currentNode = node.children.head
             if linkedlist.length(node.children) <= 1:
                 if index == len(prefix):
-                    print('index == len(prefix)')
                     return autoCompletarR(currentNode.value, prefix, index+1)
                 else:
                     return autoCompletarR(currentNode.value, prefix + node.key, index+1)
@@ -431,33 +431,39 @@ def autoCompletar(T, prefix):
 
 T = Trie()
 """
-insert(T, 'hola')
-insert(T, 'holo')
+
 insert(T, 'holanda')
-insert(T, 'holograma')
-insert(T, 'hologramica')
-insert(T, 'sol')
+
 insert(T, 'radar')
 insert(T, 'abcd')
-"""
-
-insert(T, 'cdba')
 insert(T, 'groenlandia')
 insert(T, 'groenlandes')
+insert(T, 'cdba')
+"""
+
+insert(T, 'sol')
+insert(T, 'hola')
+insert(T, 'holo')
+insert(T, 'holograma')
+insert(T, 'hologramica')
 mostrar_trie(T.root)
-print('Search: ', search(T, 'hola'))
+
 
 M = Trie()
 insert(M, 'hola')
 insert(M, 'holo')
 
 
-## Falta implementar el delete
-findAll(T, 'hol', 3) 
+delete(T, 'sol')
+mostrar_trie(T.root)
 
-print('areEqualTrie: ', areEqualTrie(T, M))
+"""
 
-print('existsPalindromo: ',  existsPalindromo(T))
-print(autoCompletar(T, 'groen'))
+print('Search: ', search(T, 'ba')) #✅
+print('findAll:', findAll(T, 'gro', 11)) #✅
+print('areEqualTrie:', areEqualTrie(T, M)) #✅
+print('existsPalindromo:',  existsPalindromo(T)) #✅
+print('autoCompletar:', autoCompletar(T, 'ho')) #✅
+"""
 
 #mostrar_trie(T.root)
