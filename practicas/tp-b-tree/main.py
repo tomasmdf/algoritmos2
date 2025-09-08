@@ -39,6 +39,15 @@ si el nodo no esta lleno entonces se recorre keys y se inserta en la posicion co
 
 
 """
+def splitBTree(node, t):
+    #la nueva raiz esta en posicion t
+
+    newRoot = linkedlist.accessNode(node.keys, t)
+    print('newRoot', newRoot.value)
+
+
+    return
+
 
 def insertR(node, key, t):
 
@@ -54,7 +63,7 @@ def insertR(node, key, t):
                         currentNode = currentNode.nextNode
                 else: 
                     break
-                
+
 
         if currentNode != None:
 
@@ -69,6 +78,12 @@ def insertR(node, key, t):
                 linkedlist.add(node.keys, key)
         else:
             linkedlist.add(node.keys, key)
+
+    else:
+
+        #se supero el maximo de 2t-1, hay que hacer split del nodo
+        #se sube el nodo medio y se divide los 2 laterales 
+        splitBTree(node, t)
 
     return 
 
@@ -108,7 +123,13 @@ btree.root.children = [child1, child2, child3]
 """
 
 # Mostrar el árbol
+#t=3
+#max 5
+#min 2
 insert(btree, 14)
 insert(btree, 16)
 insert(btree, 12)
+insert(btree, 13)
+insert(btree, 17)
+insert(btree, 19)
 showBTree(btree.root)
