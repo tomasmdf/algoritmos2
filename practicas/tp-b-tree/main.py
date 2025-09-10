@@ -112,12 +112,26 @@ class BTree:
     #   3- k esta en el extremo izq, su pred. es el ultimo elemento del nodo parent
     #   4- en general el pred de k, es el mayor de los menores
 
-    def findPredecesorR(self, node, k):
+    def findPredecesorR(self, node, k, keyPosition):
+
+        if keyPosition == 0 : # estamos en caso 1, 3 o 4
+            return 
+
+        if keyPosition > 0: # estamos en 2
+            #retornar el elemento n keyposition - 1
+            return 
+
+
+
+
         return
 
     def findPredecesor(self, node, k):
+        keyPosition = self.search(node, k)[1]
+        print('position:', keyPosition)
+
         if self.search(node, k) != None: # existe k en el btree
-            return 
+            return self.findPredecesorR(node, k, keyPosition)
 
 
 
@@ -137,3 +151,4 @@ print([child.keys for child in bt.root.children])  # claves de los hijos
 
 print(bt.search(bt.root, 4))
 print('Key minima:', bt.minKey(bt.root))
+print('Predecesor:', bt.findPredecesor(bt.root, 7))
