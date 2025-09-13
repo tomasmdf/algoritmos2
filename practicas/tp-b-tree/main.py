@@ -9,6 +9,9 @@ class BTree:
         self.root = BTreeNode(leaf=True)
         self.t = t   # grado mínimo
 
+
+    
+
     # --------------------------
     # Dividir hijo lleno
     # --------------------------
@@ -17,64 +20,50 @@ class BTree:
         y = parent.children[i]
         z = BTreeNode(leaf=y.leaf)
 
-        # la clave media está en y.keys[t-1]
         mid = y.keys[t-1]
 
-        # z recibe las últimas t-1 claves de y
-        z.keys = y.keys[t:]   
-        y.keys = y.keys[:t-1]
+        # claves
+        z.keys = y.keys[t:]            # t .. 2t-2
+        y.keys = y.keys[:t-1]          # 0 .. t-2
 
-        # si no es hoja, también repartir hijos
+        # hijos
         if not y.leaf:
             z.children = y.children[t:]
             y.children = y.children[:t]
 
-        # insertar z como hijo del padre
         parent.children.insert(i+1, z)
-
-        # subir la clave media al padre
         parent.keys.insert(i, mid)
 
-
-    # --------------------------
-    # Insertar en nodo no lleno
-    # --------------------------
     def insert_non_full(self, node, key):
-        i = len(node.keys) - 1
-
+        i = len(node.keys)-1
         if node.leaf:
-            # insertar en posición correcta en keys
-            node.keys.append(key)
-            node.keys.sort()
+            node.keys.append(None)     # espacio
+            while i >= 0 and key < node.keys[i]:
+                node.keys[i+1] = node.keys[i]
+                i -= 1
+            node.keys[i+1] = key
         else:
-            # encontrar hijo adecuado
             while i >= 0 and key < node.keys[i]:
                 i -= 1
             i += 1
-
-            # si el hijo está lleno → dividir
             if len(node.children[i].keys) == 2*self.t - 1:
                 self.split_child(node, i)
                 if key > node.keys[i]:
                     i += 1
-
             self.insert_non_full(node.children[i], key)
 
-    # --------------------------
-    # Insertar en el árbol
-    # --------------------------
     def insert(self, key):
         root = self.root
-        if len(root.keys) == 2*self.t - 1:
-            # raíz llena → crecer altura
+        if len(root.keys) == 2*self.t -1:
             new_root = BTreeNode(leaf=False)
             new_root.children.append(root)
             self.root = new_root
-            self.split_child(new_root, 0)
-            self.insert_non_full(new_root, key)
+            self.split_child(new_root,0)
+            self.insert_non_full(new_root,key)
         else:
-            self.insert_non_full(root, key)
+            self.insert_non_full(root,key)
 
+    
     def search(self, node, key):
         i = 0
 
@@ -112,43 +101,98 @@ class BTree:
     #   3- k esta en el extremo izq, su pred. es el ultimo elemento del nodo parent
     #   4- en general el pred de k, es el mayor de los menores
 
-    def findPredecesorR(self, node, k, keyPosition):
+  
+    def highestOfLower(self, node):
+        i = 0
+        #print(node.keys)
+        # voy hasta el final
+        while i < len(node.keys)-1:
+            i += 1
 
-        if keyPosition == 0 : # estamos en caso 1, 3 o 4
-            return 
-
-        if keyPosition > 0: # estamos en 2
-            #retornar el elemento n keyposition - 1
-            return 
-
+        #print('node.keys[i]', node.keys[i])
+        if node.leaf:
+            return node.keys[i]
+        else:
+            return self.highestOfLower(node.children[i+1])
 
 
+    def findPredecesorR(self, node, k, keyPosition, parent):
+        i = 0
 
-        return
+        # buscar la primera clave mayor o igual que key
+        while i < len(node.keys) and k > node.keys[i]:
+
+            #Caso 2
+            if i < len(node.keys)-1 and node.keys[i+1]:
+                if k == node.keys[i+1] and node.leaf:
+                    return node.keys[i]
+
+            #print('node.keys[i]', node.keys[i])
+            i += 1
+
+        #print('node.keys[i]', node.keys[i])
+
+        if i < len(node.keys) and k == node.keys[i]: #estamos en k
+
+            if node.children:
+                return self.highestOfLower(node.children[i])
+            else:
+                if parent and parent < k:
+                    return parent
+                else:
+                    return None
+        
+        return self.findPredecesorR(node.children[i], k, keyPosition, node.keys[i-1]) 
 
     def findPredecesor(self, node, k):
-        keyPosition = self.search(node, k)[1]
-        print('position:', keyPosition)
+        key = self.search(node, k)
+        if key:
+            keyPosition = key[1]
+        #print('position:', keyPosition)
 
         if self.search(node, k) != None: # existe k en el btree
-            return self.findPredecesorR(node, k, keyPosition)
+            return self.findPredecesorR(node, k, keyPosition, None)
 
 
+    #Ejercicio 6 - Algoritmo que recibe un btree y un entero k y devuelve True si existen 2 keys tal que x+l = k
+    #x-k=l
+    #por cada elemento x<k hago x-k=l y busco si l esta en el btree, si existe devuelve true
+    def findSum(self, node, k, root):
+
+        i = 0
+        sumFound = False
+
+        while i < len(node.keys):
+            
+            if node.keys[i] < k:
+
+                keyToSearch = k-node.keys[i]
+                if self.search(root, keyToSearch) != None:
+                    return True
+                
+            i += 1
+                
+        for child in node.children:
+            sumFound = self.findSum(child, k, root)
+            if sumFound:
+                break
+
+        return sumFound
 
 
-
-
-
-        
+def print_btree(node, level=0):
+        print("  " * level, node.keys)
+        for child in node.children:
+            print_btree(child, level+1)
     
 
 bt = BTree(t=2)  # B-tree de grado mínimo 2
-for k in [10, 20, 5, 6, 12, 30, 7, 17, 1]:
+for k in [10, 20, 5]:
     bt.insert(k)
 
-print(bt.root.keys)        # claves de la raíz
-print([child.keys for child in bt.root.children])  # claves de los hijos
+print_btree(bt.root)
 
 print(bt.search(bt.root, 4))
 print('Key minima:', bt.minKey(bt.root))
-print('Predecesor:', bt.findPredecesor(bt.root, 7))
+print('Predecesor:', bt.findPredecesor(bt.root, 20))
+print('Find Sum:', bt.findSum(bt.root, 15, bt.root))
