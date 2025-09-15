@@ -1,3 +1,7 @@
+
+#https://docs.google.com/document/d/1CJeK9zOhkrR146I5DQzhWFTHeJ2TsT917SNWyub3rTU/edit?tab=t.0
+
+
 class BTreeNode:
     def __init__(self, leaf=False):
         self.keys = []       # lista de claves (ordenadas)
