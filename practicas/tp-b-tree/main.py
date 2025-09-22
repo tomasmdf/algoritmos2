@@ -14,8 +14,6 @@ class BTree:
         self.t = t   # grado mínimo
 
 
-    
-
     # --------------------------
     # Dividir hijo lleno
     # --------------------------
