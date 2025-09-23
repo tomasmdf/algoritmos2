@@ -39,8 +39,8 @@ def insert(D, key, value):
     node.key = key
     node.value = value
 
-    if D[slotToInsert]  == None: #slot vacio
-        D[slotToInsert] = key
+    if D[slotToInsert]  == None or D[slotToInsert]  == 'deleted': #slot vacio
+        D[slotToInsert] = node
 
     elif type(D[slotToInsert]) is list: #si hay mas de un elemento en el slot
         D[slotToInsert].append(node)
@@ -61,12 +61,14 @@ Salida: Devuelve el value de la key.  Devuelve None si el key no se encuentra.
 def search(D, key):
     slot = D[hashResto(key, len(D))]
 
+    #print(type(slot) is list)
+
     if type(slot) is list:
         for n in range(0, len(slot)):
-            if slot[n] == key:
+            if slot[n].key == key:
                 return slot[n].value
             
-    if slot != None:
+    elif slot != None and slot != 'deleted':
 
         if slot.key == key:
             return slot.value
@@ -84,12 +86,59 @@ Salida: Devuelve D
 
 
 def delete(D, key):
-    return 
+
+    slot = D[hashResto(key, len(D))]
+
+    if type(slot) is list:
+        for n in range(0, len(slot)):
+            if slot[n].key == key:
+
+                if len(slot) == 1:
+                    D[hashResto(key, len(D))] = None
+                else:
+                    slot.remove(slot[n])
+                break
+
+    elif slot != None:
+        if slot.key == key:
+            print(slot.value)
+            D[hashResto(key, len(D))] = 'deleted'
+
+    return D
+
+
+
+def mostrar_diccionario(diccionario):
+    """Muestra el contenido del diccionario (lista de buckets con dictionaryNode)."""
+    for i, bucket in enumerate(diccionario):
+        print(f"Bucket {i}: ", end="")
+        if bucket is None or bucket == 'deleted':
+            print("vacío")
+        elif isinstance(bucket, list):
+            for node in bucket:
+                print(f"[{node.key} : {node.value}]", end=" ")
+            print()
+        else:  # es un solo dictionaryNode
+            print(f"[{bucket.key} : {bucket.value}]")
 
 
 
 
 m=9
 dictionary = createDictionary(9)
+insert(dictionary, 2, 'casa')
+insert(dictionary, 5, 'cason')
+insert(dictionary, 6, 'casota')
+insert(dictionary, 11, 'choza')
+insert(dictionary, 21, 'chazo')
+insert(dictionary, 20, 'cha3o')
+#mostrar_diccionario(dictionary)
 
-print(len("ke"))
+delete(dictionary, 6)
+delete(dictionary, 2)
+delete(dictionary, 11)
+#delete(dictionary, 20)
+mostrar_diccionario(dictionary)
+
+
+print(search(dictionary, 5))
