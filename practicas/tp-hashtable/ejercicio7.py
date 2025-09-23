@@ -5,4 +5,31 @@ Implemente un algoritmo para realizar la compresión básica de cadenas utilizan
 
 #recorro la cadena hasta que no se repita el caracter
 # [aa, b, ccccc, aaa]
-#por cada elemento del arr calculo la suma del orden y la guardo en hashtable, [index, value, frecuency]
+#por cada elemento del arr calculo la suma del orden
+
+
+def compressString(str):
+
+    cont = 1
+    resultStr = ''
+
+    for x in range(1,len(str)):
+        print('str[x]', str[x])
+        print('cont', cont)
+
+        if str[x] == str[x-1]:
+            cont += 1
+
+        elif str[x] != str[x-1]:
+            resultStr = resultStr + str[x-1] + cont.__str__()
+            cont = 1
+
+    resultStr = resultStr + str[x] + cont.__str__()
+
+    if len(resultStr) > len(str):
+        return str
+    else:
+        return resultStr
+
+
+print(compressString('aaaaamms'))
