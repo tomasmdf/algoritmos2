@@ -4,6 +4,25 @@ from algo1 import *
 class dictionaryNode:
     value = None
     key = None
+    
+
+def hashResto(key, m):
+
+    if type(key) is str:
+        if len(key) == 1:
+            return ord(key) % m
+        else:
+            return len(key) % m
+
+    return key % m
+
+
+#crea dictionario de tamaño m con listas de python
+def createDictionary(m):
+    dictionary = [None]*m
+
+    return dictionary
+
 
 """
 insert(D, key, value)
@@ -12,6 +31,25 @@ Entrada: el diccionario sobre el cual se quiere realizar la inserción  y el val
 Salida: Devuelve D
 """
 
+def insert(D, key, value):
+
+    slotToInsert = hashResto(key, len(D))
+
+    node = dictionaryNode()
+    node.key = key
+    node.value = value
+
+    if D[slotToInsert]  == None: #slot vacio
+        D[slotToInsert] = key
+
+    elif type(D[slotToInsert]) is list: #si hay mas de un elemento en el slot
+        D[slotToInsert].append(node)
+
+    else:
+        D[slotToInsert] = [D[slotToInsert]] 
+        D[slotToInsert].append(node)
+
+    return D
 
 """
 search(D,key)
@@ -19,6 +57,21 @@ search(D,key)
 Entrada: El diccionario sobre el cual se quiere realizar la búsqueda (dictionary) y el valor del key a buscar.
 Salida: Devuelve el value de la key.  Devuelve None si el key no se encuentra.
 """
+
+def search(D, key):
+    slot = D[hashResto(key, len(D))]
+
+    if type(slot) is list:
+        for n in range(0, len(slot)):
+            if slot[n] == key:
+                return slot[n].value
+            
+    if slot != None:
+
+        if slot.key == key:
+            return slot.value
+        
+    return None
 
 
 """
@@ -30,5 +83,13 @@ Salida: Devuelve D
 """
 
 
+def delete(D, key):
+    return 
 
-dictionary = Array(9,None)
+
+
+
+m=9
+dictionary = createDictionary(9)
+
+print(len("ke"))
