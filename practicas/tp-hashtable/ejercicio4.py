@@ -26,7 +26,7 @@ convertimos a minusculas S y P, string.casefold()
 
 class permutacionChar:
     value: None
-    ocurrency: None
+    frecuency: None
 
 def insert(D, char):
 
@@ -35,13 +35,13 @@ def insert(D, char):
 
     node = permutacionChar()
     node.value = char
-    node.ocurrency = 1
+    node.frecuency = 1
 
     if D[slotToInsert]  == None or D[slotToInsert]  == 'deleted': #slot vacio
         D[slotToInsert] = node
 
     else:
-        D[slotToInsert].ocurrency += 1
+        D[slotToInsert].frecuency += 1
 
     return D
 
@@ -51,11 +51,11 @@ def searchPermutation(D, char):
     if slot == None:
         return False
 
-    elif slot.ocurrency >= 1:
-        slot.ocurrency = slot.ocurrency - 1
+    elif slot.frecuency >= 1:
+        slot.frecuency = slot.frecuency - 1
         return True
             
-    elif slot.ocurrency < 1 :
+    elif slot.frecuency < 1 :
         return False
 
 
@@ -66,7 +66,7 @@ def mostrar_diccionario(diccionario):
         if bucket is None or bucket == 'deleted':
             print("vacío")
         else:  # hay un nodo permutacionChar
-            print(f"[{bucket.value} : {bucket.ocurrency}]")
+            print(f"[{bucket.value} : {bucket.frecuency}]")
 
 def isPermutation(D, s, p):
 

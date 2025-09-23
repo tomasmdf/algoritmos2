@@ -124,7 +124,7 @@ def mostrar_diccionario(diccionario):
 
 
 
-m=9
+"""m=9
 dictionary = createDictionary(9)
 insert(dictionary, 2, 'casa')
 insert(dictionary, 5, 'cason')
@@ -141,4 +141,4 @@ delete(dictionary, 11)
 mostrar_diccionario(dictionary)
 
 
-print(search(dictionary, 5))
+print(search(dictionary, 5))"""
