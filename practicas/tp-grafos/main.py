@@ -259,10 +259,31 @@ def countConnections(Grafo):
 Descripción: Implementa la operación cantidad de componentes conexas 
 Entrada: Grafo con la representación de Lista de Adyacencia.
 Salida: retorna el número de componentes conexas que componen el grafo.
+
+
+Ejemplo
+
+# Componente 1
+(0,1), (1,2), (2,0)
+
+# Componente 2
+(3,4)
+
+# El vértice 5 queda solo
+
+en este caso tiene 3 componentes conexas
+
+
 """
 
 def countConnections(graph):
-    return 
+
+    if isConnected(graph): # si es conexo tiene 1 componente conexa
+        return 1
+    else:
+        #me fijo si desde n puedo ir a un nodo mayor (n+x) si no sumo 1 y empiezo desde cero
+        
+        return 
 
 
 
@@ -339,4 +360,5 @@ print('Ejercicio-2-existPath:', existPath(graph, 0, 2))
 print('Ejercicio-3-isConnected:', isConnected(graph))
 print('Ejercicio-4-isTree:', isTree(graph))
 print('Ejercicio-5-isComplete:', isComplete(graph))
-print('Ejercicio-5-convertTree:', convertTree(graph))
+print('Ejercicio-6-convertTree:', convertTree(graph))
+print('Ejercicio-7-countConnections:', countConnections(graph))
