@@ -221,24 +221,48 @@ y devuelvo los arcos de retroceso
 
 """
 
-def findUnnecesaryBranches(graph, currentVert, prevVert, branchesToDelete, visitedVert):
+def findUnnecesaryBranches(graph, branchesToDelete, TuplesArr):
 
-    add(visitedVert, currentVert)
+    if not(isTree(graph)):
 
-    current = graph[currentVert].head
+        for n in range(len(graph)-1):
+            current = graph[n].head
+            
+            while current != None:
 
-    while current != None:
+                edge = (min(n, current.value), max(n, current.value))
 
+                if edge not in TuplesArr and search(branchesToDelete, edge) == None:
 
+                    if any(t[0] == n for t in TuplesArr): # si ya existe alguna tupla (n,_)
+                        add(branchesToDelete, edge)
+                    else:
+                        TuplesArr.append(edge)
 
-        current = current.nextNode
+                current = current.nextNode
 
-
-    return 
+    #print('tuples', TuplesArr)
+    
+    return mostrarLinkedList(branchesToDelete)
 
 
 def convertTree(graph):
-    return findUnnecesaryBranches(graph, 0, 0, LinkedList(), LinkedList())
+    return findUnnecesaryBranches(graph, LinkedList(), [])
+
+
+
+
+"""
+Ejercicio 7
+Implementar la función que responde a la siguiente especificación.
+def countConnections(Grafo):
+Descripción: Implementa la operación cantidad de componentes conexas 
+Entrada: Grafo con la representación de Lista de Adyacencia.
+Salida: retorna el número de componentes conexas que componen el grafo.
+"""
+
+def countConnections(graph):
+    return 
 
 
 
@@ -295,9 +319,14 @@ add(vertices,0)
 
 
 edges = LinkedList()
-add(edges, (3,4))
+"""add(edges, (0,1))
+add(edges, (0,4))
+add(edges, (1,2))
+add(edges, (1,3))
+add(edges, (1,4))
 add(edges, (2,3))
-#add(edges, (1,2))
+add(edges, (3,4))"""
+add(edges, (1,2))
 add(edges, (0,2))
 add(edges, (0,1))
 
@@ -310,3 +339,4 @@ print('Ejercicio-2-existPath:', existPath(graph, 0, 2))
 print('Ejercicio-3-isConnected:', isConnected(graph))
 print('Ejercicio-4-isTree:', isTree(graph))
 print('Ejercicio-5-isComplete:', isComplete(graph))
+print('Ejercicio-5-convertTree:', convertTree(graph))
