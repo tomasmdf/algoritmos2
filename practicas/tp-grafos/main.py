@@ -1,6 +1,8 @@
 from algo1 import *
 from linkedlist import *
 from mystack import * 
+from myqueue import *
+import math
 
 #Vertex = vertices, Edges: Aristas
 
@@ -276,16 +278,194 @@ en este caso tiene 3 componentes conexas
 
 """
 
+
 def countConnections(graph):
+
+    
+
+
 
     if isConnected(graph): # si es conexo tiene 1 componente conexa
         return 1
     else:
-        #me fijo si desde n puedo ir a un nodo mayor (n+x) si no sumo 1 y empiezo desde cero
+        #meto las aristas visitadas en un array y voy recorriendo las distintas aristas no visitadas
+        vert = len(graph)
         
-        return 
+        visited = [False]*vert
+        components = 0
+
+        for v in range(vert):
+            if not visited[v]:
+                # Si el vértice no fue visitado, arranca una nueva componente
+                components += 1
+                stack = [v]         # usamos pila para DFS
+
+                while stack:
+                    node = stack.pop()
+                    if not visited[node]:
+                        visited[node] = True
+
+                        # recorremos los vecinos en la lista de adyacencia
+                        current = graph[node].head
+                        while current is not None:
+                            if not visited[current.value]:
+                                stack.append(current.value)
+                            current = current.nextNode
 
 
+
+        return components
+
+
+
+"""
+Ejercicio 8
+Implementar la función que responde a la siguiente especificación.
+def convertToBFSTree(Grafo, v):
+Descripción: Convierte un grafo en un árbol BFS
+Entrada: Grafo con la representación de Lista de Adyacencia, v vértice que representa la raíz del árbol
+Salida: Devuelve una Lista de Adyacencia con la representación BFS del grafo recibido usando v como raíz.
+"""
+
+class BFSNode:
+    id = None
+    color = None
+    parent = None
+    distance = None
+
+"""
+se usa white(recien descubierto), gray(descubierto por un vertice adyacente), black(se analizaron todos sus vertices 
+adyacentes)
+
+1- en un vertice x, lo marca como gris, y marca de blanco todos sus vertices adyacentes
+me muevo a uno de sus vertices adyacentes, realizo 1, aumento en 1 la distancia
+una vez analizado todos los vert. adyacentes marco el vertice x como black
+
+sigo con los vertices grises hasta que no quede ninguno gris
+"""
+
+
+def convertToBFSTree(graph, v):
+
+    return
+
+
+"""
+Ejercicio 9
+Implementar la función que responde a la siguiente especificación.
+def convertToDFSTree(Grafo, v):
+Descripción: Convierte un grafo en un árbol DFS
+Entrada: Grafo con la representación de Lista de Adyacencia, v vértice que representa la raíz del árbol
+Salida: Devuelve una Lista de Adyacencia con la representación DFS del grafo recibido usando v como raíz.
+
+
+
+Comienza por un vertice v cualquiera
+    explora hacia abajo mientras sea posible 
+        explora las aristas del vertice v que descubrio mas recientemente
+            deja de lado las aristas que estan en el mismo nivel de v para despues
+                cuando no puede ir mas profundo, retrocede y sigue con las aristas pendientes
+                    repite hasta descubrir todos los vertices
+
+
+"""
+
+
+"""
+
+Ejercicio 10
+Implementar la función que responde a la siguiente especificación.
+def bestRoad(Grafo, v1, v2):
+Descripción: Encuentra el camino más corto, en caso de existir, entre dos vértices.
+Entrada: Grafo con la representación de Lista de Adyacencia, v1 y v2 vértices del grafo.
+Salida: retorna la lista de vértices que representan el camino más corto entre v1 y v2. La lista resultante contiene al inicio a v1 y al final a v2. En caso que no exista camino se retorna la lista vacía.
+
+
+aplico BFS desde el vertice v1
+
+"""
+
+
+
+"""
+Ejercicio 12
+Demuestre que si el grafo G es un árbol y se le agrega una arista nueva entre cualquier par de vértices se forma exactamente un ciclo y deja de ser un árbol.
+
+"""
+
+#Todo arbol tiene la propiedad de tener n-1 aristas siendo n la cantidad de vertices, luego si se agrega una arista
+#cualquier dejaria de cumplir esta propiedad y por lo tanto dejaria de ser arbol 
+
+
+"""
+Ejercicio 13
+Demuestre que si la arista (u,v) no pertenece al árbol BFS, entonces los niveles de u y v difieren a lo sumo en 1.
+"""
+
+#El algoritmo BFS por cada vertice u añade todas sus vertices adyacentes, luego si no existe la arista (u,v), siempre
+#sus niveles van a diferir en a lo sumo 1
+
+#Si existe el vertice (u,v), cuando estemos en el vertice u el algoritmo de BFS va a crear un hijo de u por cada 
+#vertice adyacente de u, luego los niveles de u y v difererian en menos de 1
+
+
+"""
+Ejercicio 14
+Implementar la función que responde a la siguiente especificación.
+def PRIM(Grafo): 
+Descripción: Implementa el algoritmo de PRIM 
+Entrada: Grafo con la representación de Matriz de Adyacencia.
+Salida: retorna el árbol abarcador de costo mínimo
+
+
+se forman dos conjuntos disjuntos U y V-U
+    se toma un vertice a se lo envia a U
+        se busca la arista con menos peso y se mueve el vertice a U, siempre se tienen en cuenta todas las aristas 
+        para elegir el menor
+            se repite hasta vaciar el conjunto V-U
+            
+"""
+
+
+"""
+Ejercicio 15
+Implementar la función que responde a la siguiente especificación.
+def KRUSKAL(Grafo): 
+Descripción: Implementa el algoritmo de KRUSKAL 
+Entrada: Grafo con la representación de Matriz de Adyacencia.
+Salida: retorna el árbol abarcador de costo mínimo
+
+Primero se forma un conjunto por cada vertice del grafo
+    Se ordenan por peso las distintas aristas 
+        por cada par (u,v) se hace findSet(u) y findSet(v), y si son distintos (unen 2 componentes conexas)
+        se inserta en el conjunto bosque A y se unen las 2 componentes conexas
+    
+"""
+
+"""
+Ejercicio 16
+Demostrar que si la arista (u,v) de costo mínimo tiene un nodo en U y otro en V - U, entonces la arista (u,v) pertenece a un árbol abarcador de costo mínimo.
+"""
+
+#si existe la arista (u,v) de costo minimo donde u pertenece a U y v a V-U, entonces la arista (u,v) 
+#obligatoriamente va a pertenecer al AACM 
+
+
+"""
+Ejercicio 17
+Sea e la arista de mayor costo de algún ciclo de G(V,A) . Demuestre que existe un árbol abarcador de costo mínimo AACM(V,A-e) que también lo es de G.
+"""
+
+#sabemos que e es la arista de mayor costo de algun ciclo de G(V,A). Al formar el AACM, se forma un arbol abarcador
+#cuya suma de aristas es la menor posible, luego el AACM(V, A-e) es un AACM de G ya que e es un ciclo, es decir que 
+#no se va a tomar como arista de AACM y e es del mayor costo, por lo tanto va a existir otras aristas con suma menor
+
+"""
+Ejercicio 18
+Demuestre que si unimos dos AACM por un arco (arista) de costo mínimo el resultado es un nuevo AACM. (Base del funcionamiento del algoritmo de Kruskal)
+"""
+
+#
 
 """
 
@@ -360,5 +540,5 @@ print('Ejercicio-2-existPath:', existPath(graph, 0, 2))
 print('Ejercicio-3-isConnected:', isConnected(graph))
 print('Ejercicio-4-isTree:', isTree(graph))
 print('Ejercicio-5-isComplete:', isComplete(graph))
-print('Ejercicio-6-convertTree:', convertTree(graph))
+#print('Ejercicio-6-convertTree:', convertTree(graph))
 print('Ejercicio-7-countConnections:', countConnections(graph))
