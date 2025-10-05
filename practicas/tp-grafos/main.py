@@ -465,7 +465,29 @@ Ejercicio 18
 Demuestre que si unimos dos AACM por un arco (arista) de costo mínimo el resultado es un nuevo AACM. (Base del funcionamiento del algoritmo de Kruskal)
 """
 
-#
+#Sean G(V,A) y G'(V',A') dos grafos ponderados, no dirigidos, si se forman sus respectivos AACM, 
+#esos AACM van a ser el resultado de hacer AACM(G+G'), luego la union de AACM(G) y AACM(G') es un nuevo AACM
+
+"""
+Ejercicio 19
+Explique qué modificaciones habría que hacer en el algoritmo de Prim sobre el grafo no dirigido y conexo G(V,A), o sobre la función de costo c(v1,v2)-> R para lograr: 	
+ 	1. Obtener un árbol de recubrimiento de costo máximo. 		
+ 	2. Obtener un árbol de recubrimiento cualquiera.
+3. Dado un conjunto de aristas E ∈ A, que no forman un ciclo, encontrar el árbol de recubrimiento mínimo Gc(V,AC) tal que E ∈ Ac.
+"""
+
+#1-en el algoritmo de PRIM en lugar de elegir la arista con menos peso, se elije la arista de mayor peso
+#2-en el algoritmo de PRIM en lugar de elegir la arista con menos peso, se elije la primera conexion 
+#que une ambos conjuntos
+#3-no hay que hacer ningun cambio en el algoritmo solo hay que verificar que el grafo Gc(V,Ac) sea conexo
+
+"""
+Ejercicio 20
+Sea G<V, A> un grafo conexo, no dirigido y ponderado, donde todas las aristas tienen el mismo costo. Suponiendo que G está implementado usando matriz de adyacencia, haga en pseudocódigo un algoritmo O(V^2) que devuelva una matriz M de VxV donde: M[u, v] = 1 si (u,v) ∈ A y (u, v) estará obligatoriamente en todo árbol abarcador de costo mínimo de G, y cero en caso contrario.
+"""
+
+#Debido a que todos los vertices tienen el mismo costo, solo tenemos que buscar un arbol abarcador, luego esas aristas
+#van a estar obligatoriamente en el AACM
 
 """
 
